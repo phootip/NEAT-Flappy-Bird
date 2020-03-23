@@ -14,11 +14,10 @@ class Bird:
     ANIMATION_TIME = 5
 
     def __init__(self,x,y):
-        self.x = x
-        self.y = y
         self.vel = 0
         self.tick_count = 0
         self.img = self.IMGS[0] 
+        self.rect = self.img.get_rect(topleft=(x,y))
         self.acc = 2
 
     def jump(self):
@@ -28,13 +27,10 @@ class Bird:
     def move(self):
         self.tick_count += 1
         self.vel += self.acc
-        self.y += self.vel
-        # d = self.vel*self.tick_count + 0.5 * self.acc * (self.tick_count ** 2)
-        # if d >= 16: d = 16
-        # self.y = self.y + d
+        self.rect.y += self.vel
 
     def draw(self):
-        screen.blit(self.img, (self.x,self.y))
+        screen.blit(self.img, self.rect)
 
     def get_mask(self):
         return pygame.mask.form_surface(self.img)

@@ -19,32 +19,63 @@ pygame.display.set_caption('Flappy Happy')
 clock = pygame.time.Clock()
 bird = Bird(200,200)
 pipes = [Pipe()]
+score = 0
+addPipe = False
+gameover = False
+
+font = pygame.font.Font('freesansbold.ttf', 32)
+green = (0, 255, 0) 
+blue = (0, 0, 128) 
+text = font.render('Game Over', True, green, blue)
+textRect = text.get_rect(center=(300,200))
 
 def move():
-    bird.move()
+    global addPipe
+    if not gameover:
+        bird.move()
+        for pipe in pipes:
+            pipe.move()
+            if pipe.x < -100:
+                addPipe = True
+
+def think():
+    global addPipe, score, gameover
+    if base_img.get_rect(topleft=(0,700)).colliderect(bird.rect): gameover = True
     for pipe in pipes:
-        pipe.move()
+        if pipe.is_collided_with(bird):
+            gameover = True
+    if addPipe:
+        score += 1
+        print(score)
+        del pipes[0]
+        pipes.append(Pipe())
+        addPipe = False
 
 def draw():
+    scoreText = font.render(f'Score: {score}', True, green, blue)
+    screen.blit(bg_img, (0,0))
+    screen.blit(base_img, (0,700))
+    screen.blit(scoreText, (0,0))
     bird.draw()
     for pipe in pipes:
         pipe.draw()
+    if gameover:
+        screen.blit(text, textRect)
+    pygame.display.flip()
 
 def run():
     crashed = False
     while not crashed:
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     bird.jump()
-        screen.blit(bg_img, (0,0))
-        screen.blit(base_img, (0,700))
         move()
+        think()
         draw()
-        pygame.display.flip()
-        clock.tick(30)
 
 
 if __name__ == "__main__":
