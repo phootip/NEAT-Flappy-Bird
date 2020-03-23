@@ -19,24 +19,21 @@ class Bird:
         self.vel = 0
         self.tick_count = 0
         self.img = self.IMGS[0] 
-        self.acc = 5
+        self.acc = 2
 
     def jump(self):
-        self.vel = -10.5
+        self.vel = -20
         self.tick_count = 0
 
     def move(self):
         self.tick_count += 1
-        
-        d = self.vel*self.tick_count + 0.5 * self.acc * (self.tick_count ** 2)
-        if d >= 16: d = 16
-
-        print(d)
-        self.y = self.y + d
+        self.vel += self.acc
+        self.y += self.vel
+        # d = self.vel*self.tick_count + 0.5 * self.acc * (self.tick_count ** 2)
+        # if d >= 16: d = 16
+        # self.y = self.y + d
 
     def draw(self):
-        imagerect = self.img.get_rect()
-        # screen.blit(self.img, imagerect)
         screen.blit(self.img, (self.x,self.y))
 
     def get_mask(self):
